@@ -1,5 +1,12 @@
 const Product = require("../models/Product");
-const { getProducts, createProduct } = require("../services/productService");
+const {
+  getProducts,
+  createProduct,
+  updateProduct,
+  getProductById,
+  bulkUpdateProductService,
+  deleteProductByIdService,
+} = require("../services/productService");
 
 exports.getProduct = async (req, res, next) => {
   try {
@@ -32,6 +39,23 @@ exports.getProduct = async (req, res, next) => {
     });
   }
 };
+exports.getProductById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await getProductById(id);
+    res.status(200).json({
+      status: "Successful",
+      message: "Product found",
+      data: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Failed",
+      message: "No Product Found",
+      error: err.message,
+    });
+  }
+};
 
 exports.createProduct = async (req, res, next) => {
   try {
@@ -45,6 +69,66 @@ exports.createProduct = async (req, res, next) => {
     res.json({
       status: "Successful",
       message: "Product Inserted Successfully",
+      data: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Failed",
+      message: "Product insertion Failed",
+      error: err.message,
+    });
+  }
+};
+
+exports.updateProduct = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    console.log("data(req.body):", data);
+    const result = await updateProduct(id, data);
+    // result.logger();
+    // console.log("result====>", result);
+    res.json({
+      status: "Successful",
+      message: "Product Updated Successfully",
+      data: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Failed",
+      message: "Product insertion Failed",
+      error: err.message,
+    });
+  }
+};
+exports.deleteProductById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await deleteProductByIdService(id);
+    res.json({
+      status: "Successful",
+      message: "Product Deleted Successfully",
+      data: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Failed",
+      message: "Failed to delete Product",
+      error: err.message,
+    });
+  }
+};
+
+exports.bulkUpdateProduct = async (req, res, next) => {
+  try {
+    const data = req.body;
+    console.log("data(req.body):", data);
+    const result = await bulkUpdateProductService(data);
+    // result.logger();
+    // console.log("result====>", result);
+    res.status(200).json({
+      status: "Successful",
+      message: "Product Updated Successfully",
       data: result,
     });
   } catch (err) {
